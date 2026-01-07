@@ -53,6 +53,8 @@ function SemiLocaleWrapper({ children }) {
 }
 
 // initialization
+// 从环境变量读取基础路径，默认为 /llm
+const basePath = import.meta.env.VITE_BASE_PATH || '/llm';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -60,6 +62,7 @@ root.render(
     <StatusProvider>
       <UserProvider>
         <BrowserRouter
+          basename={basePath}
           future={{
             v7_startTransition: true,
             v7_relativeSplatPath: true,

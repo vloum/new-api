@@ -1,5 +1,9 @@
 FROM oven/bun:latest AS builder
 
+# 前端构建参数：基础路径
+ARG VITE_BASE_PATH=/llm
+ENV VITE_BASE_PATH=${VITE_BASE_PATH}
+
 WORKDIR /build
 COPY web/package.json .
 COPY web/bun.lock .
@@ -26,6 +30,9 @@ COPY --from=builder /build/dist ./web/dist
 RUN go build -ldflags "-s -w -X 'github.com/QuantumNous/new-api/common.Version=$(cat VERSION)'" -o new-api
 
 FROM debian:bookworm-slim
+
+# 后端环境变量：路由前缀（可通过运行时环境变量覆盖）
+ENV BASE_PATH=/llm
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates tzdata libasan8 wget \

@@ -175,6 +175,9 @@ var (
 
 var RateLimitKeyExpirationDuration = 20 * time.Minute
 
+// BasePath 全局路由前缀，可通过环境变量 BASE_PATH 配置，默认为 "/llm"
+var BasePath = "/llm"
+
 const (
 	UserStatusEnabled  = 1 // don't use 0, 0 is the default value!
 	UserStatusDisabled = 2 // also don't use 0

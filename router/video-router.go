@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetVideoRouter(router *gin.Engine) {
+func SetVideoRouter(router *gin.RouterGroup) {
 	videoV1Router := router.Group("/v1")
 	videoV1Router.Use(middleware.TokenAuth(), middleware.Distribute())
 	{

@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetRelayRouter(router *gin.Engine) {
+func SetRelayRouter(router *gin.RouterGroup) {
 	router.Use(middleware.CORS())
 	router.Use(middleware.DecompressRequestMiddleware())
 	router.Use(middleware.StatsMiddleware())

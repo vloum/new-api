@@ -25,7 +25,11 @@ import { codeInspectorPlugin } from 'code-inspector-plugin';
 const { vitePluginSemi } = pkg;
 
 // https://vitejs.dev/config/
+// 从环境变量读取基础路径，默认为 /llm
+const basePath = process.env.VITE_BASE_PATH || '/llm';
+
 export default defineConfig({
+  base: basePath,
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -90,17 +94,39 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     proxy: {
-      '/api': {
+      // 匹配带基础路径的 API 请求，转发到后端时移除基础路径
+      [`^${basePath}/api`]: {
         target: 'http://localhost:3000',
         changeOrigin: true,
+        rewrite: (path) => {
+          // 移除基础路径前缀
+          const basePathEscaped = basePath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          return path.replace(new RegExp(`^${basePathEscaped}`), '');
+        },
       },
-      '/mj': {
+      [`^${basePath}/mj`]: {
         target: 'http://localhost:3000',
         changeOrigin: true,
+        rewrite: (path) => {
+          const basePathEscaped = basePath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          return path.replace(new RegExp(`^${basePathEscaped}`), '');
+        },
       },
-      '/pg': {
+      [`^${basePath}/pg`]: {
         target: 'http://localhost:3000',
         changeOrigin: true,
+        rewrite: (path) => {
+          const basePathEscaped = basePath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          return path.replace(new RegExp(`^${basePathEscaped}`), '');
+        },
+      },
+      [`^${basePath}/v1`]: {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        rewrite: (path) => {
+          const basePathEscaped = basePath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          return path.replace(new RegExp(`^${basePathEscaped}`), '');
+        },
       },
     },
   },

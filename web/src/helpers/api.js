@@ -26,10 +26,17 @@ import {
 import axios from 'axios';
 import { MESSAGE_ROLES } from '../constants/playground.constants';
 
+// 获取 API 基础路径：优先使用 VITE_REACT_APP_SERVER_URL，否则使用 VITE_BASE_PATH
+const getApiBaseUrl = () => {
+  if (import.meta.env.VITE_REACT_APP_SERVER_URL) {
+    return import.meta.env.VITE_REACT_APP_SERVER_URL;
+  }
+  // 使用 VITE_BASE_PATH 作为 API 前缀（默认为 /llm）
+  return import.meta.env.VITE_BASE_PATH || '/llm';
+};
+
 export let API = axios.create({
-  baseURL: import.meta.env.VITE_REACT_APP_SERVER_URL
-    ? import.meta.env.VITE_REACT_APP_SERVER_URL
-    : '',
+  baseURL: getApiBaseUrl(),
   headers: {
     'New-API-User': getUserIdFromLocalStorage(),
     'Cache-Control': 'no-store',
@@ -68,9 +75,7 @@ patchAPIInstance(API);
 
 export function updateAPI() {
   API = axios.create({
-    baseURL: import.meta.env.VITE_REACT_APP_SERVER_URL
-      ? import.meta.env.VITE_REACT_APP_SERVER_URL
-      : '',
+    baseURL: getApiBaseUrl(),
     headers: {
       'New-API-User': getUserIdFromLocalStorage(),
       'Cache-Control': 'no-store',
