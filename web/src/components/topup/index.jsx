@@ -432,7 +432,9 @@ const TopUp = () => {
     const res = await API.get('/api/user/aff');
     const { success, message, data } = res.data;
     if (success) {
-      let link = `${window.location.origin}/register?aff=${data}`;
+      // 使用 VITE_BASE_PATH 作为前缀（默认为 /llm）
+      const basePath = import.meta.env.VITE_BASE_PATH || '/llm';
+      let link = `${window.location.origin}${basePath}/register?aff=${data}`;
       setAffLink(link);
     } else {
       showError(message);

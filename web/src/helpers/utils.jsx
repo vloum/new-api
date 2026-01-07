@@ -54,7 +54,11 @@ export function getSystemName() {
 
 export function getLogo() {
   let logo = localStorage.getItem('logo');
-  if (!logo) return '/logo.png';
+  if (!logo) {
+    // 使用 VITE_BASE_PATH 作为前缀（默认为 /llm）
+    const basePath = import.meta.env.VITE_BASE_PATH || '/llm';
+    return `${basePath}/logo.png`;
+  }
   return logo;
 }
 
@@ -128,7 +132,9 @@ export function showError(error) {
           // 清除用户状态
           localStorage.removeItem('user');
           // toast.error('错误：未登录或登录已过期，请重新登录！', showErrorOptions);
-          window.location.href = '/login?expired=true';
+          // 使用 VITE_BASE_PATH 构建完整路径
+          const basePath = import.meta.env.VITE_BASE_PATH || '/llm';
+          window.location.href = `${basePath}/login?expired=true`;
           break;
         case 429:
           Toast.error('错误：请求次数过多，请稍后再试！');

@@ -86,7 +86,9 @@ const SetupWizard = () => {
 
         // If setup is already completed, redirect to home
         if (data.status) {
-          window.location.href = '/';
+          // 使用 VITE_BASE_PATH 作为前缀（默认为 /llm）
+          const basePath = import.meta.env.VITE_BASE_PATH || '/llm';
+          window.location.href = basePath === '/' ? '/' : `${basePath}/`;
           return;
         }
 

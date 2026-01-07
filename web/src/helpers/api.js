@@ -253,7 +253,9 @@ async function prepareOAuthState(options = {}) {
 export async function onDiscordOAuthClicked(client_id, options = {}) {
   const state = await prepareOAuthState(options);
   if (!state) return;
-  const redirect_uri = `${window.location.origin}/oauth/discord`;
+  // 使用 VITE_BASE_PATH 作为前缀（默认为 /llm）
+  const basePath = import.meta.env.VITE_BASE_PATH || '/llm';
+  const redirect_uri = `${window.location.origin}${basePath}/oauth/discord`;
   const response_type = 'code';
   const scope = 'identify+openid';
   window.open(
@@ -269,9 +271,11 @@ export async function onOIDCClicked(
 ) {
   const state = await prepareOAuthState(options);
   if (!state) return;
+  // 使用 VITE_BASE_PATH 作为前缀（默认为 /llm）
+  const basePath = import.meta.env.VITE_BASE_PATH || '/llm';
   const url = new URL(auth_url);
   url.searchParams.set('client_id', client_id);
-  url.searchParams.set('redirect_uri', `${window.location.origin}/oauth/oidc`);
+  url.searchParams.set('redirect_uri', `${window.location.origin}${basePath}/oauth/oidc`);
   url.searchParams.set('response_type', 'code');
   url.searchParams.set('scope', 'openid profile email');
   url.searchParams.set('state', state);

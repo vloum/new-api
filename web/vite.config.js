@@ -54,6 +54,23 @@ export default defineConfig({
         });
       },
     },
+    {
+      name: 'replace-html-absolute-paths',
+      transformIndexHtml(html) {
+        // 替换 HTML 中的绝对路径，添加 basePath 前缀
+        // 例如：/logo.png -> /llm/logo.png
+        return html.replace(
+          /(href|src)=["'](\/[^"']+)["']/g,
+          (match, attr, path) => {
+            // 跳过已经是 basePath 开头的路径，以及 /src/ 等构建路径
+            if (path.startsWith(basePath) || path.startsWith('/src/')) {
+              return match;
+            }
+            return `${attr}="${basePath}${path}"`;
+          }
+        );
+      },
+    },
     react(),
     vitePluginSemi({
       cssLayer: true,

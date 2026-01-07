@@ -18,21 +18,23 @@ For commercial licensing, please contact support@quantumnous.com
 */
 
 import React, { useContext, useEffect } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { StatusContext } from '../../context/Status';
 
 const SetupCheck = ({ children }) => {
   const [statusState] = useContext(StatusContext);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (
       statusState?.status?.setup === false &&
       location.pathname !== '/setup'
     ) {
-      window.location.href = '/setup';
+      // 使用 navigate 而不是 window.location.href，这样会自动处理 basename
+      navigate('/setup', { replace: true });
     }
-  }, [statusState?.status?.setup, location.pathname]);
+  }, [statusState?.status?.setup, location.pathname, navigate]);
 
   return children;
 };
