@@ -130,3 +130,48 @@ For request structs that are parsed from client JSON and then re-marshaled to up
   - field absent in client JSON => `nil` => omitted on marshal;
   - field explicitly set to zero/false => non-`nil` pointer => must still be sent upstream.
 - Avoid using non-pointer scalars with `omitempty` for optional request parameters, because zero values (`0`, `0.0`, `false`) will be silently dropped during marshal.
+
+## Fork 同步上游 (Syncing with Upstream)
+
+本仓库 Fork 自 [QuantumNous/new-api](https://github.com/QuantumNous/new-api)。每次需要拉取原项目最新代码时，按以下步骤操作。
+
+### 远程仓库
+
+| 远程名     | 地址                                               | 说明   |
+|------------|----------------------------------------------------|--------|
+| `origin`   | `git@github.com:vloum/new-api.git`                 | 本 Fork |
+| `upstream` | `https://github.com/QuantumNous/new-api.git`      | 原项目 |
+
+若尚未添加 `upstream`，执行一次：
+
+```bash
+git remote add upstream https://github.com/QuantumNous/new-api.git
+```
+
+### 同步步骤
+
+```bash
+git fetch upstream
+git checkout main
+git merge upstream/main
+# 若有冲突：解决后 git add <文件>，再 commit
+git push origin main
+```
+
+无冲突时可直接：
+
+```bash
+git fetch upstream && git checkout main && git merge upstream/main && git push origin main
+```
+
+### 常见冲突与处理原则
+
+本仓库在路由与静态资源上做了定制（base path、NoRoute 等），以下文件合并时易冲突，需**保留本仓库写法**并**选择性合入上游新增**：
+
+| 文件 | 本仓库保留 | 上游可合入 |
+|------|------------|------------|
+| `router/main.go` | `common.BasePath`、本仓库的 NoRoute 与重定向逻辑 | 仅补充缺失的 `import`（如 `controller`、`middleware`） |
+| `router/video-router.go` | 函数签名 `SetVideoRouter(router *gin.RouterGroup)` | 上游新增的路由块（如 `/videos/:task_id/content` VideoProxy） |
+| `router/web-router.go` | 本仓库的 `staticMiddleware` 及静态/缓存逻辑 | 不采用上游的 `static.Serve` + web-router 内的 `NoRoute` |
+
+冲突解决后：删除所有 `<<<<<<<` / `=======` / `>>>>>>>` 标记，运行 `go build ./...` 验证，再 `git add`、`git commit`、`git push origin main`。若上游新增了其他易冲突文件，可在此表补充。
