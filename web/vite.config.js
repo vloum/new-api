@@ -33,6 +33,11 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      // 新版本 semi-ui 的 exports 未暴露 dist/css/semi.css，显式指向实际文件避免构建报错
+      '@douyinfe/semi-ui/dist/css/semi.css': path.resolve(
+        __dirname,
+        'node_modules/@douyinfe/semi-ui/dist/css/semi.css'
+      ),
     },
   },
   plugins: [
